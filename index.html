@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退租谈判项目管理 - 实时看板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --accent-primary: #3a7bd5;
+            --accent-secondary: #00d2ff;
+            --border-color: #e9ecef;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-link {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            color: var(--text-primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.6);
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        /* Tab Content */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--success), #5dd879); }
+        .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--warning), #ffe066); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--info), #74c7d9); }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value { font-size: 1.8rem; font-weight: 700; }
+
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .progress-section h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--accent-primary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .progress-legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.completed { background: var(--success); }
+        .legend-dot.in-progress { background: var(--warning); }
+        .legend-dot.pending { background: #e9ecef; border: 1px solid #ced4da; }
+
+        /* Phase Sections */
+        .phase {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .phase-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .phase-header:hover { background: #f8f9fa; }
+
+        .phase-title-group { display: flex; align-items: center; gap: 12px; }
+
+        .phase-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .phase-badge.batch-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .phase-badge.batch-2 { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .phase-badge.batch-3 { background: linear-gradient(135deg, #fc4a1a, #f7b733); }
+
+        .phase-title { font-size: 1rem; font-weight: 600; }
+        .phase-subtitle { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+        .phase-toggle { font-size: 1rem; color: var(--text-secondary); transition: transform 0.2s; }
+        .phase.collapsed .phase-toggle { transform: rotate(-90deg); }
+        .phase-progress { font-size: 0.85rem; color: var(--text-secondary); margin-right: 10px; }
+        .phase-body { padding: 0 20px 20px; }
+        .phase.collapsed .phase-body { display: none; }
+
+        /* Table */
+        .table-container { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.85rem;
+        }
+
+        thead th {
+            background: #f8f9fa;
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        tbody tr:hover { background: #f8f9fa; }
+        tbody td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .company-name { font-weight: 600; }
+
+        .person-name { display: flex; align-items: center; gap: 8px; }
+        .avatar {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.7rem; font-weight: 600;
+        }
+
+        .date-cell { font-family: 'SF Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); }
+        .date-cell.overdue { color: var(--danger); font-weight: 600; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+        .status-completed { background: rgba(40, 167, 69, 0.1); color: var(--success); }
+        .status-completed::before { background: var(--success); }
+        .status-in-progress { background: rgba(255, 193, 7, 0.1); color: #d4a017; }
+        .status-in-progress::before { background: var(--warning); }
+        .status-pending { background: rgba(108, 117, 125, 0.1); color: var(--text-secondary); }
+        .status-pending::before { background: #adb5bd; }
+        .status-blocked { background: rgba(220, 53, 69, 0.1); color: var(--danger); }
+        .status-blocked::before { background: var(--danger); }
+        .status-negotiating { background: rgba(23, 162, 184, 0.1); color: var(--info); }
+        .status-negotiating::before { background: var(--info); }
+
+        .notes-cell { max-width: 280px; color: var(--text-secondary); font-size: 0.8rem; }
+        .notes-cell:empty::before { content: '—'; color: #adb5bd; }
+
+        /* Iframe Container */
+        .iframe-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+        }
+
+        .iframe-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .iframe-header h3 { font-size: 1rem; font-weight: 600; }
+
+        .iframe-wrapper {
+            width: 100%;
+            height: calc(100% - 60px);
+            position: relative;
+        }
+
+        .iframe-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .iframe-fallback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .iframe-fallback h3 { margin-bottom: 12px; color: var(--text-primary); }
+        .iframe-fallback p { margin-bottom: 20px; }
+
+        /* Summary panel */
+        .summary-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 20px 28px;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .summary-item { text-align: center; }
+        .summary-value { font-size: 1.6rem; font-weight: 700; }
+        .summary-label { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .iframe-container { height: calc(100vh - 150px); min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>退租谈判项目管理</h1>
+                <div id="last-sync" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">正在同步数据...</div>
+            </div>
+            <div class="header-actions">
+                <a href="https://www.kdocs.cn/l/cgU6KfwBy1a5" target="_blank" class="btn-link btn-secondary">打开金山文档</a>
+                <a href="https://www.kdocs.cn/l/cgU6KfwBy1a5" target="_blank" class="btn-link btn-primary">协作编辑</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">📊 可视化看板</button>
+            <button class="tab" onclick="switchTab('spreadsheet')">📋 在线表格</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">谈判企业总数</div>
+                    <div class="stat-value" id="total-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">已完成</div>
+                    <div class="stat-value" id="completed-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">进行中</div>
+                    <div class="stat-value" id="in-progress-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">待启动</div>
+                    <div class="stat-value" id="pending-count">0</div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <h2>总体进度</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="overall-progress-text">0%</div>
+                </div>
+                <div class="progress-legend">
+                    <div class="legend-item"><div class="legend-dot completed"></div><span>已完成</span></div>
+                    <div class="legend-item"><div class="legend-dot in-progress"></div><span>进行中</span></div>
+                    <div class="legend-item"><div class="legend-dot pending"></div><span>待启动</span></div>
+                </div>
+            </div>
+
+            <div id="phases-container"></div>
+
+            <div class="summary-panel">
+                <div class="summary-item">
+                    <div class="summary-value" id="summary-total">0</div>
+                    <div class="summary-label">总企业数</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="summary-completed">0</div>
+                    <div class="summary-label">已完成</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="summary-rate">0%</div>
+                    <div class="summary-label">完成率</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spreadsheet Tab -->
+        <div id="spreadsheet" class="tab-content">
+            <div class="iframe-container">
+                <div class="iframe-header">
+                    <h3>金山文档在线表格</h3>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">实时同步 · 多人协作</span>
+                </div>
+                <div class="iframe-wrapper">
+                    <iframe id="kdocs-iframe" src="https://www.kdocs.cn/l/cgU6KfwBy1a5" allow="fullscreen"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Status mapping for badge display
+        const statusMap = {
+            'pending': { label: '待启动', class: 'status-pending' },
+            'in-progress': { label: '进行中', class: 'status-in-progress' },
+            'negotiating': { label: '谈判中', class: 'status-negotiating' },
+            'completed': { label: '已完成', class: 'status-completed' },
+            'blocked': { label: '受阻', class: 'status-blocked' }
+        };
+
+        const batchNames = { 1: '第一批企业', 2: '第二批企业', 3: '第三批企业' };
+        
+        let companies = [];
+        const API_BASE = window.location.origin;
+        let isLoading = true;
+
+        // Fetch data from backend API or static JSON
+        async function fetchData() {
+            try {
+                let response = await fetch(`${API_BASE}/api/data`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        companies = result.data;
+                        isLoading = false;
+                        render();
+                        updateLastSync(result.updatedAt, true);
+                        return;
+                    }
+                }
+                response = await fetch(`${API_BASE}/data.json`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.companies) {
+                        companies = result.companies;
+                        isLoading = false;
+                        render();
+                        updateLastSync(result.updatedAt, false);
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to fetch data:', e);
+                if (companies.length === 0) {
+                    loadInitialData();
+                }
+                isLoading = false;
+                render();
+                updateLastSync(null, false);
+            }
+        }
+
+        function loadInitialData() {
+            companies = [
+                { id: 1, name: '科技有限公司A', person: '张三', batch: 1, planDate: '2026-07-15', actualDate: '', status: 'pending', notes: '初步接触，对方表示需要时间考虑' },
+                { id: 2, name: '贸易公司B', person: '李四', batch: 1, planDate: '2026-07-20', actualDate: '', status: 'in-progress', notes: '已发出退租通知，等待回复' },
+                { id: 3, name: '咨询公司C', person: '王五', batch: 1, planDate: '2026-07-25', actualDate: '', status: 'pending', notes: '' },
+                { id: 4, name: '设计工作室D', person: '赵六', batch: 2, planDate: '2026-08-10', actualDate: '', status: 'pending', notes: '合同到期日较远，需提前沟通' },
+                { id: 5, name: '广告传媒E', person: '钱七', batch: 2, planDate: '2026-08-15', actualDate: '', status: 'pending', notes: '' },
+                { id: 6, name: '电商企业F', person: '孙八', batch: 2, planDate: '2026-08-20', actualDate: '', status: 'pending', notes: '历史合作关系良好，预计沟通顺畅' },
+                { id: 7, name: '法律事务所G', person: '周九', batch: 3, planDate: '2026-09-05', actualDate: '', status: 'pending', notes: '' },
+                { id: 8, name: '金融公司H', person: '吴十', batch: 3, planDate: '2026-09-10', actualDate: '', status: 'pending', notes: '需法务部门配合审核条款' }
+            ];
+        }
+
+        function updateLastSync(timestamp, isLive) {
+            const el = document.getElementById('last-sync');
+            if (!el) return;
+            if (!timestamp) {
+                el.textContent = '离线模式（使用本地数据）';
+                el.style.color = 'var(--text-secondary)';
+                return;
+            }
+            const date = new Date(timestamp);
+            const mode = isLive ? '● 实时同步' : '○ 静态数据';
+            el.textContent = `${mode} · 上次更新: ${date.toLocaleString('zh-CN')}`;
+            el.style.color = isLive ? 'var(--success)' : 'var(--text-secondary)';
+        }
+
+        // Poll every 10 seconds
+        setInterval(fetchData, 10000);
+        // Initial fetch
+        fetchData();
+
+        function getInitials(name) { return name ? name.charAt(0).toUpperCase() : '?'; }
+
+        function isOverdue(planDate, actualDate, status) {
+            if (status === 'completed') return false;
+            if (!planDate) return false;
+            const plan = new Date(planDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return plan < today;
+        }
+
+        function render() {
+            updateStats();
+            renderPhases();
+            updateSummary();
+        }
+
+        function updateStats() {
+            const total = companies.length;
+            const completed = companies.filter(c => c.status === 'completed').length;
+            const inProgress = companies.filter(c => c.status === 'in-progress' || c.status === 'negotiating').length;
+            const pending = companies.filter(c => c.status === 'pending' || c.status === 'blocked').length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('completed-count').textContent = completed;
+            document.getElementById('in-progress-count').textContent = inProgress;
+            document.getElementById('pending-count').textContent = pending;
+            document.getElementById('overall-progress').style.width = rate + '%';
+            document.getElementById('overall-progress-text').textContent = rate + '%';
+        }
+
+        function updateSummary() {
+            const total = companies.length;
+            const completed = companies.filter(c => c.status === 'completed').length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('summary-total').textContent = total;
+            document.getElementById('summary-completed').textContent = completed;
+            document.getElementById('summary-rate').textContent = rate + '%';
+        }
+
+        function renderPhases() {
+            const container = document.getElementById('phases-container');
+            container.innerHTML = '';
+
+            for (let batch = 1; batch <= 3; batch++) {
+                const batchCompanies = companies.filter(c => c.batch === batch);
+                const completed = batchCompanies.filter(c => c.status === 'completed').length;
+                const total = batchCompanies.length;
+                const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                const phaseDiv = document.createElement('div');
+                phaseDiv.className = 'phase';
+                phaseDiv.innerHTML = `
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-title-group">
+                            <div class="phase-badge batch-${batch}">${batch}</div>
+                            <div>
+                                <div class="phase-title">${batchNames[batch]}</div>
+                                <div class="phase-subtitle">${total} 家企业 · 完成率 ${rate}%</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="phase-progress">${completed}/${total} 完成</span>
+                            <span class="phase-toggle">▼</span>
+                        </div>
+                    </div>
+                    <div class="phase-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr><th>企业名称</th><th>责任人</th><th>计划完成时间</th><th>实际完成时间</th><th>状态</th><th>谈判情况备注</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${batchCompanies.map(c => `
+                                        <tr>
+                                            <td><span class="company-name">${c.name}</span></td>
+                                            <td><div class="person-name"><div class="avatar">${getInitials(c.person)}</div><span>${c.person || '—'}</span></div></td>
+                                            <td class="date-cell ${isOverdue(c.planDate, c.actualDate, c.status) ? 'overdue' : ''}">${c.planDate || '—'}${isOverdue(c.planDate, c.actualDate, c.status) ? ' ⚠' : ''}</td>
+                                            <td class="date-cell">${c.actualDate || '—'}</td>
+                                            <td><span class="status-badge ${statusMap[c.status].class}">${statusMap[c.status].label}</span></td>
+                                            <td class="notes-cell">${c.notes || ''}</td>
+                                        </tr>
+                                    `).join('')}
+                                    ${batchCompanies.length === 0 ? '<tr><td colspan="6" style="text-align: center; color: #adb5bd;">暂无数据</td></tr>' : ''}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(phaseDiv);
+            }
+        }
+
+        function togglePhase(header) {
+            header.closest('.phase').classList.toggle('collapsed');
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
