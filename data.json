@@ -1,0 +1,215 @@
+{
+  "companies": [
+    {
+      "id": "J",
+      "name": "李斌伟",
+      "person": "林可儿",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "K",
+      "name": "逸豪科技（佛山）有限公司",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "L",
+      "name": "佛山素灵健康产业有限公司",
+      "person": "李翠清",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "M",
+      "name": "佛山盒利机械科技有限公司",
+      "person": "李翠清",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "N",
+      "name": "伍思韵",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "O",
+      "name": "孙宁",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "P",
+      "name": "曾文娟",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "Q",
+      "name": "男笙、曾美霞",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "R",
+      "name": "广州量子仪器仪表有限公司",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "S",
+      "name": "广州市绵发贸易有限公司",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "T",
+      "name": "广东三狮新材料科技有限公司",
+      "person": "张智彪",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "U",
+      "name": "佛山华合创进出口有限公司",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "V",
+      "name": "限像艺术创作（深圳）企业（个人独资）",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "W",
+      "name": "刘巧莹",
+      "person": "程浩杰",
+      "batch": 1,
+      "planDate": "2026-06-30",
+      "actualDate": "",
+      "status": "in-progress",
+      "notes": ""
+    },
+    {
+      "id": "X",
+      "name": "胡振华",
+      "person": "林可儿",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Y",
+      "name": "杨天武",
+      "person": "程浩杰",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Z",
+      "name": "林海伦、徐玉芳",
+      "person": "程浩杰",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "a",
+      "name": "广州南科高新材料科技有限公司",
+      "person": "张智彪",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "b",
+      "name": "中山科灵新材料科技有限公司",
+      "person": "张智彪",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "c",
+      "name": "王海逻",
+      "person": "程浩杰",
+      "batch": 2,
+      "planDate": "2026-07-03",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "d",
+      "name": "广州市宏茂能源技术有限公司",
+      "person": "张智彪",
+      "batch": 3,
+      "planDate": "2026-07-10",
+      "actualDate": "",
+      "status": "pending",
+      "notes": ""
+    }
+  ],
+  "updatedAt": "2026-06-25T20:41:59.209383"
+}
